@@ -192,6 +192,10 @@
   margin-top: 10px;
 }
 
+.card-post footer p {
+  margin-top: 5px;
+}
+
 .card-post footer h1 {
   font-size: 16px;
   font-weight: 500;

@@ -12,9 +12,17 @@ import { api } from "../../services/api";
 
 const CardPost = ({ post }) => {
   const [mostrarComentarios, setMostrarComentarios] = useState(false);
-  const [comentarios,setComentarios] = useState([]);                                                                                                                                                                    
-  const carregarComentarios = () => {
-    setMostrarComentarios(!mostrarComentarios);
+  const [comentarios, setComentarios] = useState([]);
+  const carregarComentarios = async () => {
+    try {
+      if (!mostrarComentarios) {
+        const retorno = await api.get(`postagens/${post.id}/comentarios`);
+        setComentarios(retorno.data);
+      }
+      setMostrarComentarios(!mostrarComentarios);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="card-post">
@@ -38,19 +46,19 @@ const CardPost = ({ post }) => {
         <h1 onClick={carregarComentarios}>Comentários</h1>
         {mostrarComentarios && (
           <>
-          {comentarios.map((c) => (
-               <section>
-               <header>
-                 <img src={fotoPerfil} alt="Foto de perfil" />
- 
-                 <strong>{c.Aluno.nome}</strong>
-          <p>{c.created_at}</p>
-               </header>
- 
-          <p>{c.descricao}</p>
-             </section>
-          ))}
-           
+            {comentarios.length === 0 && <p>seja o primeiro a comentar!!</p>}
+            {comentarios.map((c) => (
+              <section>
+                <header>
+                  <img src={fotoPerfil} alt="Foto de perfil" />
+
+                  <strong>{c.Aluno.nome}</strong>
+                  <p>{c.created_at}</p>
+                </header>
+
+                <p>{c.descricao}</p>
+              </section>
+            ))}
           </>
         )}
       </footer>
