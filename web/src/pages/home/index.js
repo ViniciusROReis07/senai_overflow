@@ -13,6 +13,23 @@ import { api } from "../../services/api";
 const CardPost = ({ post }) => {
   const [mostrarComentarios, setMostrarComentarios] = useState(false);
   const [comentarios, setComentarios] = useState([]);
+  const [novoComentario, setNovoComentario] = useState([]);
+
+  const criarComentario = async (e) => {
+    e.preventDefault();
+
+    try {
+      const retorno = await api.post(`/postagens/${post.id}/comentarios`, {
+        descricao: novoComentario,
+      });
+      let comentario = retorno.data;
+      comentario.Aluno = getAluno();
+      setComentarios([...comentarios, comentario]);
+      setNovoComentario("");
+    } catch (erro) {
+      alert(erro);
+    }
+  };
   const carregarComentarios = async () => {
     try {
       if (!mostrarComentarios) {
@@ -35,20 +52,20 @@ const CardPost = ({ post }) => {
         {post.gists && <FiGithub className="icon" size={20} />}
       </header>
 
-      <body>
+      <section>
         <strong>{post.titulo}</strong>
 
         <p>{post.descricao}</p>
 
         <img src={imgPost} alt="Imagem do post" />
-      </body>
+      </section>
       <footer>
         <h1 onClick={carregarComentarios}>Comentários</h1>
         {mostrarComentarios && (
           <>
-            {comentarios.length === 0 && <p>seja o primeiro a comentar!!</p>}
+            {comentarios.length === 0 && <p>Seja o primeiro a comentar!!</p>}
             {comentarios.map((c) => (
-              <section>
+              <section key={c.id}>
                 <header>
                   <img src={fotoPerfil} alt="Foto de perfil" />
 
@@ -59,6 +76,17 @@ const CardPost = ({ post }) => {
                 <p>{c.descricao}</p>
               </section>
             ))}
+            <form className="novo-comentario" onSubmit={criarComentario}>
+              <textarea
+                value={novoComentario}
+                onChange={(e) => {
+                  setNovoComentario(e.target.value);
+                }}
+                placeholder="Comente sua duvida"
+                required
+              ></textarea>
+              <button>Enviar</button>
+            </form>
           </>
         )}
       </footer>
@@ -117,7 +145,7 @@ function Home() {
         <section className="profile">
           <img src={fotoPerfil} alt="Foto de perfil" />
 
-          <a href="#">Editar foto</a>
+          <label>Editar foto</label>
 
           <strong>Nome:</strong>
           <p>{alunoSessao.nome}</p>
@@ -127,7 +155,7 @@ function Home() {
 
         <section className="feed">
           {postagens.map((post) => (
-            <CardPost post={post} />
+            <CardPost key={post.id} post={post} />
           ))}
         </section>
       </div>

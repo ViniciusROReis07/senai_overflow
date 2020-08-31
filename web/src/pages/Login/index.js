@@ -11,6 +11,7 @@ const FormLogin = (props) => {
 
     const history = useHistory();
 
+
     const [alunoLogin, setAlunoLogin] = useState({
         email: "",
         senha: ""
@@ -59,6 +60,7 @@ const FormLogin = (props) => {
 }
 
 const Registrar = (props) => {
+    const history = useHistory();
 
     const [alunoRegistrar, setAlunoRegistrar] = useState({
         ra: "",
@@ -71,10 +73,12 @@ const Registrar = (props) => {
         event.preventDefault();
 
         try {
-            const retorno = await api.post("/alunos/cadastrar", alunoRegistrar);
+            const retorno = await api.post("/alunos", alunoRegistrar);
+            console.log(retorno);
 
             if (retorno.status === 201) {
-                alert("Registrado com sucesso");
+                signin(retorno.data)
+                return  history.push("/home");
             }
             
         } catch (erro) {
