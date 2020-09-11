@@ -20,7 +20,7 @@ module.exports = {
         attributes: ["nome", "ra", "id"],
       },
       order: [["created_at", "ASC"]],
-      attributes: ["descricao", "created_at","id"],
+      attributes: ["descricao", "created_at", "id"],
     });
 
     response.send(comentarios);
@@ -52,11 +52,9 @@ module.exports = {
 
       response.status(201).send(comentario);
     } catch (error) {
-      return response
-        .status(500)
-        .send({
-          erro: "Não foi possível cadastrar a comentario, tente novamente.",
-        });
+      return response.status(500).send({
+        erro: "Não foi possível cadastrar a comentario, tente novamente.",
+      });
     }
   },
 };
